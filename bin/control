@@ -1,0 +1,39 @@
+#!/bin/bash
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+function start() {
+   echo "starting..."
+   
+}
+
+function stop() {
+   echo "stopping..."
+
+}
+
+function status() {
+    echo "status..."
+    
+    res=0
+    output=$(curl -s -m 30 http://$OPENSHIFT_CHOUCHDB_IP:$OPENSHIFT_CHOUCHDB_PORT/ &> /dev/null) || res=1
+
+    if [ $res -eq 0 ]; then
+        client_result "...is running"
+    else
+        client_result "...is either stopped or inaccessible"
+    fi
+}
+
+function restart() {
+    stop
+    start
+}
+
+case "$1" in
+  stop) stop ;;
+  start) start ;;
+  status) status ;;
+  restart) restart ;;
+  *) exit 0
+esac
